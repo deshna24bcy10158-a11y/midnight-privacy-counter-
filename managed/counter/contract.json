@@ -1,0 +1,19 @@
+{
+  "name": "counter",
+  "compilerVersion": "0.14.0",
+  "circuits": [
+    {
+      "name": "increment",
+      "zkir": "increment.zkir",
+      "witnesses": ["secret_increment_val"]
+    },
+    {
+      "name": "disclose",
+      "zkir": "disclose.zkir",
+      "witnesses": []
+    }
+  ],
+  "ledgerState": {
+    "counter": "Uint<64>"
+  }
+}

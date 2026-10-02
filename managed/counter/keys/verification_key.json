@@ -1,0 +1,6 @@
+{
+  "circuit": "counter",
+  "vk": "0x01a3f89b91e4576c2d10948b30129aef7c4309e1284a56b7c89123049182304a",
+  "protocol": "PLONK-ZKSNARK",
+  "curve": "BLS12-381"
+}
