@@ -1,0 +1,33 @@
+{
+  "name": "midnight-privacy-counter",
+  "version": "1.0.0",
+  "description": "A simple Midnight Compact smart contract demonstrating public ledger state and private witness-based computation.",
+  "type": "module",
+  "scripts": {
+    "build": "compact compile contracts/counter.compact managed/counter",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "deploy": "node --max-old-space-size=12288 src/deploy.js"
+  },
+  "keywords": [
+    "midnight",
+    "compact",
+    "zero-knowledge",
+    "privacy",
+    "smart-contract",
+    "blockchain"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "vitest": "^3.0.0",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/midnight-js-contracts": "^1.0.0",
+    "@midnight-ntwrk/midnight-js-network-id": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
