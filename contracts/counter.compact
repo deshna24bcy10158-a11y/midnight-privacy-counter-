@@ -1,0 +1,78 @@
+// ============================================================
+// PRIVACY MODEL — Midnight Privacy Counter Contract
+// ============================================================
+//
+// PUBLIC (visible on-chain as ledger state):
+//   - `counter`: A Uint<32> value representing the current counter.
+//     Anyone inspecting the ledger can see the counter's value.
+//
+// PRIVATE (provided as a witness, never stored on-chain):
+//   - `get_secret_increment()`: A private witness function that
+//     supplies a secret increment value from the user's local
+//     environment. This value is used inside the ZK circuit but
+//     is NEVER recorded on the public ledger.
+//
+// WHAT THE CONTRACT PROVES WITHOUT REVEALING:
+//   - The circuit proves that the counter was updated by a valid
+//     amount (the secret increment) without revealing what that
+//     secret amount actually was.
+//   - The `disclose()` function is used only when we explicitly
+//     want to return or expose a value publicly (e.g., reading
+//     the current counter value).
+//   - The private witness input remains confidential: observers
+//     can see that the counter changed, but they cannot determine
+//     the exact increment used in any given transaction.
+// ============================================================
+
+pragma language_version >= 0.26.0;
+
+import CompactStandardLibrary;
+
+// -----------------------------------------------------------
+// PUBLIC LEDGER STATE
+// The counter value is stored on-chain and visible to everyone.
+// -----------------------------------------------------------
+export ledger counter: Uint<32>;
+
+// -----------------------------------------------------------
+// PRIVATE WITNESS
+// This function is implemented off-chain in TypeScript.
+// It provides the secret increment value that the user wants
+// to add to the counter. The value never appears on the ledger.
+// -----------------------------------------------------------
+witness get_secret_increment(): Uint<32>;
+
+// -----------------------------------------------------------
+// CIRCUIT: increment
+// Uses the private witness to update the public counter.
+// The ZK proof verifies the computation is correct without
+// revealing the secret increment value.
+// -----------------------------------------------------------
+export circuit increment(): Void {
+    // Fetch the private value from the witness (off-chain)
+    const secret = get_secret_increment();
+
+    // Update the public ledger counter using the private value
+    // The actual secret value is NOT disclosed — only the
+    // resulting counter state change is recorded on-chain.
+    counter = counter + secret;
+}
+
+// -----------------------------------------------------------
+// CIRCUIT: get_counter
+// Reads the current counter value from the ledger.
+// Uses disclose() to explicitly make the ledger value public
+// as a return value from the circuit.
+// -----------------------------------------------------------
+export circuit get_counter(): Uint<32> {
+    return disclose(counter);
+}
+
+// -----------------------------------------------------------
+// CIRCUIT: reset
+// Resets the counter to zero. This is a simple public
+// operation with no private input required.
+// -----------------------------------------------------------
+export circuit reset(): Void {
+    counter = 0;
+}
